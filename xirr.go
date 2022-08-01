@@ -10,12 +10,14 @@ import (
 const MaxError float64 = 1e-10
 const MaxComputeWithGuessIterations uint32 = 50
 
-type Payment struct {
-	Date   time.Time
-	Amount float64
-}
+type (
+	Payment struct {
+		Date   time.Time
+		Amount float64
+	}
 
-type Payments []Payment
+	Payments []Payment
+)
 
 func (p Payments) Len() int {
 	return len(p)
@@ -38,16 +40,14 @@ func Compute(payments Payments) (float64, error) {
 	// Sort by date.
 	sort.Sort(payments)
 
-	rate := computeWithGuess(payments, 0.1)
-	guess := -0.99
+	var (
+		rate  = computeWithGuess(payments, 0.1)
+		guess = -0.99
+	)
 
-	for {
-		if guess < 1 && (math.IsNaN(rate) || math.IsInf(rate, 0)) {
-			rate = computeWithGuess(payments, guess)
-			guess += 0.01
-		}
-
-		break
+	for guess < 1 && (math.IsNaN(rate) || math.IsInf(rate, 0)) {
+		rate = computeWithGuess(payments, guess)
+		guess += 0.01
 	}
 
 	return rate, nil
