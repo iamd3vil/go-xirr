@@ -27,6 +27,23 @@ func TestRandom(t *testing.T) {
 	}
 }
 
+func BenchmarkXIRR(b *testing.B) {
+	payments, err := loadPayments("samples/random.csv")
+	if err != nil {
+		b.Fatalf("error loading payments: %v", err)
+	}
+
+	b.ResetTimer()
+	b.ReportAllocs()
+
+	for i := 0; i < b.N; i++ {
+		_, err := Compute(payments)
+		if err != nil {
+			b.Fatalf("error computing xirr: %v", err)
+		}
+	}
+}
+
 func loadPayments(fpath string) (Payments, error) {
 	f, err := os.Open(fpath)
 	if err != nil {
