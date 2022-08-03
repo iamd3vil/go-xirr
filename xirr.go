@@ -11,6 +11,7 @@ const MaxError float64 = 1e-10
 const MaxComputeWithGuessIterations uint32 = 50
 
 type (
+	// Payment is a single payment.
 	Payment struct {
 		Date   time.Time
 		Amount float64
@@ -32,6 +33,8 @@ func (p Payments) Swap(i, j int) {
 	return
 }
 
+// Compute computes xirr for given payments.
+// The payments should contain atleast 1 positive & 1 negative cash flow.
 func Compute(payments Payments) (float64, error) {
 	if err := validate(payments); err != nil {
 		return 0, err
